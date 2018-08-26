@@ -6,6 +6,7 @@ Various patches for cs 1.6 steam
 - HUD_GetHullBounds BugFix (https://gist.github.com/WPMGPRoSToTeMa/2e6e0454654f9e4ca22ee3e987051b57)
 
 For protection against server slowhacks - use ExtraMirror: https://github.com/shelru/ExtraMirror/
+
 To-do:
 - Linux version
 - Mac version
