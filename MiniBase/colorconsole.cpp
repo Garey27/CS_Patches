@@ -19,10 +19,6 @@ struct SayTextLine
 	float *m_teamColor;
 };
 
-#define g_sayTextLine (*pg_sayTextLine)
-SayTextLine g_sayTextLine[MAX_LINES + 1];
-
-
 void ConsolePrintColor(BYTE R, BYTE G, BYTE B, const char *fmt, ...) {
 	va_list va_alist;
 	char buf[1024];
@@ -32,7 +28,19 @@ void ConsolePrintColor(BYTE R, BYTE G, BYTE B, const char *fmt, ...) {
 	TColor24 DefaultColor; PColor24 Ptr; Ptr = Console_TextColor; DefaultColor = *Ptr; Ptr->R = R; Ptr->G = G; Ptr->B = B; g_Engine.Con_Printf(buf); *Ptr = DefaultColor;
 }
 
+#define g_sayTextLine (*pg_sayTextLine)
+SayTextLine g_sayTextLine[MAX_LINES + 1];
 
+std::string ws2s(const std::wstring &wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
+
+#define F2B(f) ((f) >= 1.0f ? 255 : (int)((f)*256.f))
 void ColorChatConsolePrint(char string[512])
 {
 	int rangeIndex;
@@ -43,63 +51,24 @@ void ColorChatConsolePrint(char string[512])
 
 	BYTE Cvar_R, Cvar_G, Cvar_B;
 	BYTE R, G, B;
-
 	sscanf_s(pszColor, "%hhi %hhi %hhi", &Cvar_R, &Cvar_G, &Cvar_B);
-	//std::string str(string);
 	if (g_sayTextLine[0].m_textRanges.Size() != 0)
 	{
-		// Fix color ranges for UTF-8 strings
 		for (rangeIndex = 0; rangeIndex < g_sayTextLine[0].m_textRanges.Size(); rangeIndex++)
 		{
 			range = &g_sayTextLine[0].m_textRanges[rangeIndex];
-			int start_len = range->end;
-			if (range->start)
-				range->start--;
-			for (char *str = (string + range->start); str < (string + range->end); str++)
-			{
-				if ((*str & 0xc0) == 0x80)
-				{
-					range->end++;
-				}
-			}
-
-			for (int tempIndex = rangeIndex + 1; tempIndex < g_sayTextLine[0].m_textRanges.Size(); tempIndex++)
-			{
-				auto tempRange = &g_sayTextLine[0].m_textRanges[tempIndex];
-				tempRange->start--;
-				tempRange->end--;
-				if (range->end != start_len)
-				{
-					tempRange->start += range->end - start_len;
-					tempRange->end += range->end - start_len;
-				}
-			}
-			range->end--;
-			total_length = range->end;
-		}
-		// Colorize
-		char ch;
-		for (rangeIndex = 0; rangeIndex < g_sayTextLine[0].m_textRanges.Size(); rangeIndex++)
-		{
-			range = &g_sayTextLine[0].m_textRanges[rangeIndex];
-			ch = string[range->end];
-			string[range->end] = 0;
-			#define F2B(f) ((f) >= 1.0f ? 255 : (int)((f)*256.f))
-			if (range->color)
-			{
+			if (range->color) {
 				R = F2B(range->color[0]);
 				G = F2B(range->color[1]);
 				B = F2B(range->color[2]);
 			}
-			else
-			{
+			else {
 				R = Cvar_R; G = Cvar_G; B = Cvar_B;
 			}
-			ConsolePrintColor(R, G, B, &string[range->start]);
-			string[range->end] = ch;
+			ConsolePrintColor(R, G, B, ws2s(wstring(&g_sayTextLine[0].m_line[range->start], range->end - range->start)).c_str());
 		}
 		// Print newline char if needed
-		std::string check_string(&string[0], string + total_length);
+		std::string check_string(&string[0], total_length);
 		if (check_string.find("\n") == string::npos)
 		{
 			g_Engine.pfnConsolePrint("\n");

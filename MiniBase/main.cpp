@@ -150,6 +150,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
 			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "7ECC880A", "76CC880A", 0xCC, 0);
 			//1280x720<= tab avatar fixes
 			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "817C24CC00030000", "817C24CC01000000", 0xCC, 0);
+			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "3D000300CC8B4424CC", "3D010000CC8B4424CC", 0xCC, 0);
 			//wad files download fix			
 			HexReplaceInLibrary("hw.dll", "1885C07403C600008D85", "1885C07414C600008D85", 0, 0);
 			//GetHullBounds Fix
