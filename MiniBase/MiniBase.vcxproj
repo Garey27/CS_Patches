@@ -80,6 +80,7 @@
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <TargetExt>.asi</TargetExt>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -170,6 +171,7 @@
     <ClCompile Include="colorconsole.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="offset.cpp" />
+    <ClCompile Include="playerboundsfix.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
