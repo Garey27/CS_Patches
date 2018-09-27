@@ -2,6 +2,12 @@
 #include <thread>
 #include <string>
 
+extern void FixPlayerBounds();
+extern void SearchPrintConsole();
+extern void SymbolsViewFix();
+
+HINSTANCE hDLL;
+
 cl_clientfunc_t *g_pClient = nullptr;
 cl_enginefunc_t *g_pEngine = nullptr;
 engine_studio_api_t *g_pStudio = nullptr;
@@ -72,17 +78,16 @@ void HexReplaceInLibrary(std::string libraryPath, std::string hexSearch, std::st
 	}
 }
 
-extern void FixPlayerBounds();
-extern void SearchPrintConsole();
 void ModuleLoaded()
 {
 	FixPlayerBounds();
 	offset.ConsoleColorInitalize();
 	SearchPrintConsole();
+	SymbolsViewFix();
 	FirstFrame = true;
 }
 
-void ModuleEntry( )
+void ModuleEntry()
 {
 	DWORD ClientTable = NULL, EngineTable = NULL, StudioTable = NULL;
 	while (1)
@@ -137,13 +142,12 @@ extern "C" __declspec( dllexport ) BOOL WINAPI RIB_Main ( LPVOID lp, LPVOID lp2,
 	return TRUE;
 }
 
-
 DWORD WINAPI ThreadEntry(LPVOID lpThreadParameter)
 {
 	std::thread(ModuleEntry).detach();
 	return NULL;
 }
-HINSTANCE hDLL;
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
 	switch (fdwReason)
 	{
