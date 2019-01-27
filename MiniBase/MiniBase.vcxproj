@@ -172,6 +172,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="offset.cpp" />
     <ClCompile Include="playerboundsfix.cpp" />
+    <ClCompile Include="specialenable.cpp" />
     <ClCompile Include="symbolsviewfix.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
