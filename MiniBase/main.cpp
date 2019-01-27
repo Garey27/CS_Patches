@@ -5,6 +5,7 @@
 extern void FixPlayerBounds();
 extern void SearchPrintConsole();
 extern void SymbolsViewFix();
+extern void SpecialEnable();
 
 HINSTANCE hDLL;
 
@@ -84,6 +85,7 @@ void ModuleLoaded()
 	offset.ConsoleColorInitalize();
 	SearchPrintConsole();
 	SymbolsViewFix();
+	SpecialEnable();
 	FirstFrame = true;
 }
 
