@@ -84,3 +84,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 *.tlog
+
+*.user
+[Rr]elease
+[Dd]ebug
+.vs

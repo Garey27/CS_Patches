@@ -2,6 +2,12 @@
 #include <thread>
 #include <string>
 
+extern void FixPlayerBounds();
+extern void SearchPrintConsole();
+extern void SymbolsViewFix();
+
+HINSTANCE hDLL;
+
 cl_clientfunc_t *g_pClient = nullptr;
 cl_enginefunc_t *g_pEngine = nullptr;
 engine_studio_api_t *g_pStudio = nullptr;
@@ -71,16 +77,17 @@ void HexReplaceInLibrary(std::string libraryPath, std::string hexSearch, std::st
 		cstart = res + searchbytes.size();
 	}
 }
-extern void SearchPrintConsole();
+
 void ModuleLoaded()
 {
+	FixPlayerBounds();
 	offset.ConsoleColorInitalize();
 	SearchPrintConsole();
+	SymbolsViewFix();
 	FirstFrame = true;
 }
 
-
-void ModuleEntry( )
+void ModuleEntry()
 {
 	DWORD ClientTable = NULL, EngineTable = NULL, StudioTable = NULL;
 	while (1)
@@ -135,12 +142,12 @@ extern "C" __declspec( dllexport ) BOOL WINAPI RIB_Main ( LPVOID lp, LPVOID lp2,
 	return TRUE;
 }
 
-
 DWORD WINAPI ThreadEntry(LPVOID lpThreadParameter)
 {
 	std::thread(ModuleEntry).detach();
+	return NULL;
 }
-HINSTANCE hDLL;
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
 	switch (fdwReason)
 	{
@@ -150,10 +157,9 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
 			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "7ECC880A", "76CC880A", 0xCC, 0);
 			//1280x720<= tab avatar fixes
 			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "817C24CC00030000", "817C24CC01000000", 0xCC, 0);
+			HexReplaceInLibrary("cstrike/cl_dlls/client.dll", "3D000300CC8B4424CC", "3D010000CC8B4424CC", 0xCC, 0);
 			//wad files download fix			
 			HexReplaceInLibrary("hw.dll", "1885C07403C600008D85", "1885C07414C600008D85", 0, 0);
-			//GetHullBounds Fix
-			HexReplaceInLibrary("hw.dll", "8B4C240433C02BC87406497403497505B801000000C3", "837C240401750B8B44240CC7400800000042B001C3C3", 0, 0);
 			CreateThread(0, 0, ThreadEntry, 0, 0, 0);
 			
 			return TRUE;
