@@ -52,9 +52,9 @@ void ColorChatConsolePrint(char string[512])
 	BYTE Cvar_R, Cvar_G, Cvar_B;
 	BYTE R, G, B;
 	sscanf_s(pszColor, "%hhi %hhi %hhi", &Cvar_R, &Cvar_G, &Cvar_B);
-	if (g_sayTextLine[0].m_textRanges.Size() != 0)
+	if (g_sayTextLine[0].m_textRanges.Count() != 0)
 	{
-		for (rangeIndex = 0; rangeIndex < g_sayTextLine[0].m_textRanges.Size(); rangeIndex++)
+		for (rangeIndex = 0; rangeIndex < g_sayTextLine[0].m_textRanges.Count(); rangeIndex++)
 		{
 			range = &g_sayTextLine[0].m_textRanges[rangeIndex];
 			if (range->color) {
@@ -81,8 +81,8 @@ void SearchPrintConsole()
 
 	if (PatternAddress)
 	{
-		size_t addref = (size_t)&pg_sayTextLine;
-		*(size_t *)addref = *(DWORD*)(PatternAddress - 0x63);
+		pg_sayTextLine = reinterpret_cast<decltype(pg_sayTextLine)>(*(DWORD*)offset.FindPattern("\x66\x39\x1D\xFF\xFF\xFF\xFF\x55", "xxx????x", offset.ClBase, offset.ClEnd, 0x3));
+
 		DWORD oldProt;
 		VirtualProtect(LPVOID(PatternAddress - 1), 6, PAGE_EXECUTE_READWRITE, &oldProt);
 		*(uint8_t *)(PatternAddress - 1) = 0x90; // NOP
