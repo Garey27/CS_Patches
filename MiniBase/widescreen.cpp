@@ -33,9 +33,9 @@ int(HUD_UpdateClientData)(client_data_t* pcldata, float flTime)
 		new_y = V_CalcFov(pcldata->fov, g_Screen.iWidth, g_Screen.iHeight);
 	}
 	else
-	{
-		new_y = V_CalcFov(pcldata->fov, g_Screen.iWidth / 1024.0, g_Screen.iHeight / 768.0);
-		new_x = pcldata->fov = V_CalcFov(new_y, g_Screen.iHeight, g_Screen.iWidth);
+	{		
+		new_y = (2.f * atan(tan(pcldata->fov * M_PI / 180.f / 2.f) * 0.75f /*768.0/1024.0*/ )) * 180.f / M_PI;
+		new_x = pcldata->fov = (2.f * atan(tan(new_y * M_PI / 180.f / 2.f) * g_Screen.iWidth/g_Screen.iHeight)) * 180.f / M_PI;
 	}
 	return ret;
 }
