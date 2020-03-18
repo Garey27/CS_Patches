@@ -1,0 +1,10 @@
+--- ao_wmm.c	2012-02-14 09:46:06.000000000 +0900
++++ ao_wmm.c	2017-02-03 22:41:00.877433264 +0900
+@@ -33,6 +33,7 @@
+ #include <windows.h>
+ #include <mmreg.h>
+ #include <mmsystem.h>
++#include <ks.h>
+ #include <ksmedia.h>
+ 
+ #include <stdlib.h>

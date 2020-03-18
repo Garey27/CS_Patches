@@ -1,0 +1,62 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# not required file in libao
+libao/doc/
+libao/src/plugins/
+libao/*.in
+libao/*.ac
+libao/*.am
+libao/*.m4
+libao/*.sh
+libao/*/*.in
+libao/*/*.ac
+libao/*/*.am
+libao/*/*/*.in
+libao/*/*/*.ac
+libao/*/*/*.am
+libao/missing
+libao/install-sh
+libao/depcomp
+libao/libao.*
+libao/config*
+libao/src/ao.vers
+libao/src/ao_au.c
+libao/src/ao_raw.c
+libao/src/ao_aixs.c
+libao/src/ao_null.c
+libao/include/ao/os_types.h
+
+# temp file
+tmp/
+build/

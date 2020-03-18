@@ -30,26 +30,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -81,6 +81,8 @@
     <GenerateManifest>false</GenerateManifest>
     <TargetExt>.asi</TargetExt>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <IncludePath>../libao-windows/build/ao;;../libao-windows/libao/include;$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);</IncludePath>
+    <LibraryPath>../libao-windows/windows/VS2015/Release;$(VC_LibraryPath_x86);$(WindowsSdk_71A_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -136,6 +138,7 @@
       <FixedBaseAddress>false</FixedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <GenerateMapFile>true</GenerateMapFile>
+      <AdditionalDependencies>psapi.lib;detours.lib;libao.lib;ksuser.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files (x86)\Steam\steamapps\common\Half-Life\ЭкстраМиррорmU9I.mix" /Y</Command>
@@ -170,10 +173,14 @@
   <ItemGroup>
     <ClCompile Include="colorconsole.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mem\handles.cpp" />
+    <ClCompile Include="mem\patternscan.cpp" />
     <ClCompile Include="offset.cpp" />
     <ClCompile Include="playerboundsfix.cpp" />
     <ClCompile Include="symbolsviewfix.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="VoicePatch.cpp" />
+    <ClCompile Include="widescreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />

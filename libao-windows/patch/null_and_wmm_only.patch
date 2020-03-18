@@ -1,0 +1,178 @@
+--- audio_out.c	2014-01-28 02:02:05.000000000 +0900
++++ audio_out.c	2017-02-03 21:48:52.927969061 +0900
+@@ -49,7 +49,6 @@
+ #ifndef _MSC_VER
+ # include <unistd.h>
+ #endif
+-#include <dirent.h>
+ 
+ #include "ao/ao.h"
+ #include "ao_private.h"
+@@ -75,27 +74,10 @@
+ 
+ 
+ extern ao_functions ao_null;
+-extern ao_functions ao_wav;
+-extern ao_functions ao_raw;
+-extern ao_functions ao_au;
+-#ifdef HAVE_SYS_AUDIO_H
+-extern ao_functions ao_aixs;
+-#endif
+-#ifdef HAVE_WMM
+ extern ao_functions ao_wmm;
+-#endif
+ static ao_functions *static_drivers[] = {
+ 	&ao_null, /* Must have at least one static driver! */
+-	&ao_wav,
+-	&ao_raw,
+-	&ao_au,
+-#ifdef HAVE_SYS_AUDIO_H
+-	&ao_aixs,
+-#endif
+-#ifdef HAVE_WMM
+ 	&ao_wmm,
+-#endif
+-
+ 	NULL /* End of list */
+ };
+ 
+@@ -128,83 +110,6 @@
+ }
+ 
+ 
+-/* Load a plugin from disk and put the function table into a driver_list
+-   struct. */
+-static driver_list *_get_plugin(char *plugin_file)
+-{
+-        ao_device *device = ao_global_dummy;
+-	driver_list *dt;
+-	void *handle;
+-        char *prompt="";
+-
+-	handle = dlopen(plugin_file, DLOPEN_FLAG /* See ao_private.h */);
+-
+-	if (handle) {
+-                prompt="calloc() failed";
+-                dt = (driver_list *)calloc(1,sizeof(driver_list));
+-		if (!dt) return NULL;
+-
+-		dt->handle = handle;
+-
+-		dt->functions = (ao_functions *)calloc(1,sizeof(ao_functions));
+-		if (!(dt->functions)) {
+-			free(dt);
+-			return NULL;
+-		}
+-
+-                prompt="ao_plugin_test() missing";
+-		dt->functions->test = dlsym(dt->handle, "ao_plugin_test");
+-		if (!(dt->functions->test)) goto failed;
+-
+-                prompt="ao_plugin_driver_info() missing";
+-		dt->functions->driver_info =
+-		  dlsym(dt->handle, "ao_plugin_driver_info");
+-		if (!(dt->functions->driver_info)) goto failed;
+-
+-                prompt="ao_plugin_device_list() missing";
+-		dt->functions->device_init =
+-		  dlsym(dt->handle, "ao_plugin_device_init");
+-		if (!(dt->functions->device_init )) goto failed;
+-
+-                prompt="ao_plugin_set_option() missing";
+-		dt->functions->set_option =
+-		  dlsym(dt->handle, "ao_plugin_set_option");
+-		if (!(dt->functions->set_option)) goto failed;
+-
+-                prompt="ao_plugin_open() missing";
+-		dt->functions->open = dlsym(dt->handle, "ao_plugin_open");
+-		if (!(dt->functions->open)) goto failed;
+-
+-                prompt="ao_plugin_play() missing";
+-		dt->functions->play = dlsym(dt->handle, "ao_plugin_play");
+-		if (!(dt->functions->play)) goto failed;
+-
+-                prompt="ao_plugin_close() missing";
+-		dt->functions->close = dlsym(dt->handle, "ao_plugin_close");
+-		if (!(dt->functions->close)) goto failed;
+-
+-                prompt="ao_plugin_clear() missing";
+-		dt->functions->device_clear =
+-		  dlsym(dt->handle, "ao_plugin_device_clear");
+-		if (!(dt->functions->device_clear)) goto failed;
+-
+-
+-	} else {
+-          aerror("Failed to load plugin %s => dlopen() failed\n",plugin_file);
+-          return NULL;
+-	}
+-
+-        adebug("Loaded driver %s\n",dt->functions->driver_info()->short_name);
+-	return dt;
+-
+- failed:
+-        aerror("Failed to load plugin %s => %s\n",plugin_file,prompt);
+-	free(dt->functions);
+-	free(dt);
+-	return NULL;
+-}
+-
+-
+ /* If *name is a valid driver name, return its driver number.
+    Otherwise, test all of available live drivers until one works. */
+ static int _find_default_driver_id (const char *name)
+@@ -281,47 +186,6 @@
+ }
+ 
+ 
+-/* Load the dynamic drivers from disk and append them to end of the
+-   driver list.  end points the driver_list node to append to. */
+-static void _append_dynamic_drivers(driver_list *end)
+-{
+-#ifdef HAVE_DLOPEN
+-	struct dirent *plugin_dirent;
+-	char *ext;
+-	struct stat statbuf;
+-	DIR *plugindir;
+-	driver_list *plugin;
+-	driver_list *driver = end;
+-        ao_device *device = ao_global_dummy;
+-
+-	/* now insert any plugins we find */
+-	plugindir = opendir(AO_PLUGIN_PATH);
+-        adebug("Loading driver plugins from %s...\n",AO_PLUGIN_PATH);
+-	if (plugindir != NULL) {
+-          while ((plugin_dirent = readdir(plugindir)) != NULL) {
+-            char fullpath[strlen(AO_PLUGIN_PATH) + 1 + strlen(plugin_dirent->d_name) + 1];
+-            snprintf(fullpath, sizeof(fullpath), "%s/%s",
+-                     AO_PLUGIN_PATH, plugin_dirent->d_name);
+-            if (!stat(fullpath, &statbuf) &&
+-                S_ISREG(statbuf.st_mode) &&
+-                (ext = strrchr(plugin_dirent->d_name, '.')) != NULL) {
+-              if (strcmp(ext, SHARED_LIB_EXT) == 0) {
+-                plugin = _get_plugin(fullpath);
+-                if (plugin) {
+-                  driver->next = plugin;
+-                  plugin->next = NULL;
+-                  driver = driver->next;
+-                }
+-              }
+-            }
+-          }
+-
+-          closedir(plugindir);
+-	}
+-#endif
+-}
+-
+-
+ /* Compare two drivers based on priority
+    Used as compar function for qsort() in _make_info_table() */
+ static int _compar_driver_priority (const driver_list **a,
+@@ -1254,7 +1118,6 @@
+ 
+ 	if (driver_head == NULL) {
+ 		driver_head = _load_static_drivers(&end);
+-		_append_dynamic_drivers(end);
+ 	}
+ 
+ 	/* Create the table of driver info structs */

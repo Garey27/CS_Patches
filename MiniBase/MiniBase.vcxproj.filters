@@ -12,6 +12,9 @@
     <Filter Include="Заголовочные файлы\msg">
       <UniqueIdentifier>{4f88da40-3be5-4e70-b520-5bed5fe5865d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\mem">
+      <UniqueIdentifier>{e329c42e-4c66-4ac8-893d-15679522b477}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,6 +34,18 @@
     </ClCompile>
     <ClCompile Include="symbolsviewfix.cpp">
       <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="VoicePatch.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="widescreen.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\handles.cpp">
+      <Filter>Файлы исходного кода\mem</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\patternscan.cpp">
+      <Filter>Файлы исходного кода\mem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
