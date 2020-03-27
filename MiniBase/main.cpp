@@ -6,6 +6,7 @@ extern void FixPlayerBounds();
 extern void SearchPrintConsole();
 extern void SymbolsViewFix();
 extern void widescreen_patch();
+extern void VoicePatch();
 
 HINSTANCE hDLL;
 
@@ -86,6 +87,7 @@ void ModuleLoaded()
 	SearchPrintConsole();
 	SymbolsViewFix();
 	widescreen_patch();
+	VoicePatch();
 	FirstFrame = true;
 }
 
